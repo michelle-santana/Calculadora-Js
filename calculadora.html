@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>calculadora</title>
+
+	<style>
+		body {
+			font-family: sans-serif;
+		}
+
+		#calculator {
+			width: 200px;
+			background-image: linear-gradient(#fcedf5, #e03a7a);
+			padding: 20px;
+			border-radius: 5px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, .8);
+			margin: 15px auto;
+
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			grid-gap: 5px;
+			grid-template-rows: auto repeat(5, 40px);
+		}
+
+
+		button {
+			padding: .25em;
+		}
+
+		#display {
+			padding: 10px;
+			font-size: 1.4em;
+			text-align: right;
+			background-image: linear-gradient(#df1160, #e0e0e0);
+			box-shadow: inset 3px 2px 0 white;
+			margin-bottom: 15px;
+
+			grid-column: 1 / -1;
+		}
+
+		.mais {
+			background-color: #aa0b40;
+			grid-row: 5 / 7;
+			grid-column: 4 / 5;
+
+		}
+
+		.zero {
+			background-color: #aa0b40;
+			grid-column: 1 / 3;
+		}
+	</style>
+
+</head>
+
+<body>
+
+	<div id="calculator">
+		<div id="display">0</div>
+
+		<button onclick="limpar()">AC</button>
+		<button onclick="obterPorcento()">%</button>
+		<button onclick="iniciarCalculo('*')">x</button>
+		<button onclick="iniciarCalculo('/')">/</button>
+		<button onclick="incluirDigito('7')">7</button>
+		<button onclick="incluirDigito('8')">8</button>
+		<button onclick="incluirDigito('9')">9</button>
+		<button onclick="finalizarCalculo()">=</button>
+		<button onclick="incluirDigito('4')">4</button>
+		<button onclick="incluirDigito('5')">5</button>
+		<button onclick="incluirDigito('6')">6</button>
+		<button onclick="iniciarCalculo('-')">-</button>
+		<button onclick="incluirDigito('1')">1</button>
+		<button onclick="incluirDigito('2')">2</button>
+		<button onclick="incluirDigito('3')">3</button>
+		<button onclick="iniciarCalculo('+')" class="mais">+</button>
+		<button class="zero" onclick="incluirDigito('0')">0</button>
+		<button onclick="incluirPonto()">,</button>
+
+	</div>
+	<script>
+		var numero = "0";
+		var operacao = null;
+		var outroNumero = " ";
+
+		function incluirDigito(digito) {
+			if (outroNumero && operacao && clicadoEmIgual) {
+				clicadoEmIgual = false;
+				limpar();
+				numero = digito;
+				mostrarNoDisplay(numero);
+				return
+			}
+			if (operacao !== null) {
+				outroNumero = outroNumero + digito;
+				mostrarNoDisplay(outroNumero);
+			} else {
+				if (numero === "0") {
+					numero = digito;
+				} else {
+					numero += digito;
+				}
+
+				mostrarNoDisplay(numero);
+
+			}
+
+		}
+
+		var clicadoEmIgual = false;
+
+		function finalizarCalculo() {
+			clicadoEmIgual = true;
+			var resultado = calcular();
+			numero = resultado;
+			mostrarNoDisplay(numero);
+			console.log(numero, operacao, outroNumero);
+		}
+
+		function calcular() {
+			var nCalculado = 0;
+			var n1 = parseFloat(numero);
+			var n2 = parseFloat(outroNumero);
+
+			switch (operacao) {
+				case "+":
+					nCalculado = n1 + n2;
+					break;
+				case "-":
+					nCalculado = n1 - n2;
+					break;
+				case "*":
+					nCalculado = n1 * n2;
+					break;
+				case "/":
+					nCalculado = n1 / n2;
+					break;
+
+				default:
+
+			}
+			return nCalculado;
+
+		}
+
+		function iniciarCalculo(simbolo) {
+			if (clicadoEmIgual) {
+				clicadoEmIgual = false;
+				outroNumero = "";
+			}
+			if (operacao === null || outroNumero === "") {
+				operacao = simbolo;
+			} else {
+				//já tem o numero, operacao e o outroNumero;
+				var resultado = calcular();
+				numero = resultado;
+				operacao = simbolo;
+				outroNumero = "";
+				mostrarNoDisplay(numero);
+			}
+			//  console.log(numero, operacao, outroNumero);
+		}
+
+		function incluirPonto() {
+			if (operacao && outroNumero === "") {
+				outroNumero = "0.";
+			} else if (operacao && outroNumero) {
+				numero += ".";
+			} else {
+				numero += ".";
+			}
+
+		}
+
+		function limpar() {
+			numero = "0";
+			operacao = null;
+			outroNumero = "";
+			mostrarNoDisplay(numero);
+		}
+
+		function obterPorcento() {
+			if (!outroNumero) {
+				limpar();
+				mostrarNoDisplay(numero);
+			} else {
+				if (operacao === "+" || operacao === "-") {
+					var porcentagem = n1 * outroNumero / 100;
+				} else {
+					var porcentagem = outroNumero / 100;
+				}
+				outroNumero = porcentagem;
+				mostrarNoDisplay(outroNumero);
+			}
+		}
+
+
+
+		function mostrarNoDisplay(valor) {
+			document.querySelector('#display').innerHTML = valor;
+		}
+
+	</script>
+
+	<!--	<img src="https://static.webshopapp.com/shops/038765/files/063260238/geeek-bamboo-wooden-calculator-calculator.jpg" style="width: 250px">-->
+
+</body>
+
+</html>
